@@ -16,7 +16,7 @@ button.button-style {
 	@apply text-center;
 	@apply transition-all;
 	@apply hover:bg-slate-300;
-	@apply dark:border-green-500;
+	@apply dark:border-primary-dark;
 	@apply dark:hover:bg-slate-600;
 }
 </style>
