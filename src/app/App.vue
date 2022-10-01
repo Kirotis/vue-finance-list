@@ -1,51 +1,23 @@
 <script setup lang="ts">
-import HeaderComponentVue from '@/entites/header/HeaderComponent.vue'
-import { GlobalThemeOverrides } from 'naive-ui'
+import HeaderComponentVue from '@/features/header/HeaderComponent.vue'
+import { useThemeStore } from '@/features/header/model/theme.store'
 import LogsList from '@/features/logs/LogsList.vue'
-import colors from 'tailwindcss/colors'
+import { darkTheme } from 'naive-ui'
+import { computed, onMounted } from 'vue'
 
-const themeOverrides: GlobalThemeOverrides = {
-	common: {
-		successColor: colors.gray[900],
-		// actionColor: colors.black,
-		// baseColor: colors.gray[800],
-		// borderColor: colors.black,
-		// hoverColor: colors.black,
-		// buttonColor2Hover: colors.black,
-		// primaryColorHover: colors.black,
-		// buttonColor2Pressed: colors.black,
-		// buttonColor2: colors.black,
+const store = useThemeStore()
 
-		textColor1: colors.pink[100],
-		textColor2: colors.pink[100],
-		textColor3: colors.pink[100],
-	},
-}
+onMounted(() => store.initTheme())
+
+const theme = computed(() => (store.currentTheme == 'dark' ? darkTheme : null))
 </script>
 
 <template>
-	<n-config-provider :theme-overrides="themeOverrides">
+	<n-config-provider :theme="theme">
 		<div class="h-full">
 			<HeaderComponentVue />
 			<main class="p-3">
-				<LogsList
-					:logs="[
-						{
-							money: 200,
-							title: 'test',
-							category: 'test',
-							date: new Date(),
-							id: '5',
-						},
-						{
-							money: 200,
-							title: 'test',
-							category: 'test',
-							date: new Date(),
-							id: '3',
-						},
-					]"
-				></LogsList>
+				<LogsList></LogsList>
 				<!-- <LogCardVue :item=""></LogCardVue> -->
 				<!-- <router-view /> -->
 			</main>

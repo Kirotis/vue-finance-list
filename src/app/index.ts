@@ -3,5 +3,7 @@ import App from './App.vue'
 import router from '@/pages'
 import './assets/tailwind.css'
 import naive from 'naive-ui'
+import { createPinia } from 'pinia'
 
-export const app = createApp(App).use(naive).use(router)
+const pinia = createPinia()
+export const app = createApp(App).use(pinia).use(naive).use(router)

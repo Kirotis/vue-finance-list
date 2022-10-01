@@ -1,7 +1,7 @@
 export interface ILogItem {
-	id: string
-	title: string
-	category: string
-	money: number
-	date: Date
+	readonly id: string
+	readonly title: string
+	readonly category: string
+	readonly money: number
+	readonly date: Date
 }
