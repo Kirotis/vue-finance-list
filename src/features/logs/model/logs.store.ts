@@ -9,31 +9,24 @@ export interface LogsStoreState {
 	sort: SortModeValues
 	isLoading: boolean
 	showPopup: boolean
+	updateId: string | null
 	editableItem: Partial<Omit<ILogItem, 'id' | 'date'>>
 }
 
 export const useLogsStore = defineStore({
 	id: 'logs',
 	state: (): LogsStoreState => ({
-		logs: [
-			{
-				money: 200,
-				title: 'test',
-				category: 'test',
-				date: new Date(),
-				id: v4(),
-			},
-			{
-				money: 200,
-				title: 'test',
-				category: 'test',
-				date: new Date(2018, 5, 0, 5, 2),
-				id: v4(),
-			},
-		],
+		logs: [...Array(50)].map(() => ({
+			money: 200,
+			title: 'test',
+			category: 'test',
+			date: new Date(),
+			id: v4(),
+		})),
 		sort: 'asc',
 		isLoading: false,
 		showPopup: false,
+		updateId: null,
 		editableItem: {},
 	}),
 	actions: {
@@ -44,12 +37,12 @@ export const useLogsStore = defineStore({
 				id: v4(),
 			}
 			this.logs.push(log)
+			this.showPopup = false
 			return log
 		},
 		removeLog(id: string): ILogItem {
 			const { index } = this.getLogById(id)
 			const [item] = this.logs.splice(index, 1)
-			this.showPopup = false
 			return item
 		},
 		updateLog(id: string, updateItem: Omit<ILogItem, 'id' | 'date'>): ILogItem {
@@ -71,10 +64,12 @@ export const useLogsStore = defineStore({
 			const { data } = this.getLogById(id)
 			this.editableItem = { ...data }
 			this.showPopup = true
+			this.updateId = id
 		},
 		startCreate() {
 			this.editableItem = {}
 			this.showPopup = true
+			this.updateId = null
 		},
 	},
 	getters: {

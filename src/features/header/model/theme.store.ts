@@ -1,11 +1,15 @@
 import { defineStore } from 'pinia'
+import { useLocalStorage } from '@vueuse/core'
+import { Ref } from 'vue'
+
+export type ThemeMode = 'dark' | 'light'
 
 export const useThemeStore = defineStore({
 	id: 'theme',
 	state: (): {
-		currentTheme: 'dark' | 'light'
+		currentTheme: Ref<ThemeMode>
 	} => ({
-		currentTheme: (localStorage.getItem('theme') as 'dark' | 'light') || 'dark',
+		currentTheme: useLocalStorage('theme', 'dark') as Ref<ThemeMode>, // (localStorage.getItem('theme') as ThemeMode) || 'dark',
 	}),
 	actions: {
 		initTheme() {
@@ -16,12 +20,7 @@ export const useThemeStore = defineStore({
 			return classList.remove('dark')
 		},
 		toggleTheme() {
-			if (this.currentTheme == 'dark') {
-				this.currentTheme = 'light'
-			} else {
-				this.currentTheme = 'dark'
-			}
-			localStorage.setItem('theme', this.currentTheme)
+			this.currentTheme = this.currentTheme == 'dark' ? 'light' : 'dark'
 			this.initTheme()
 		},
 	},
