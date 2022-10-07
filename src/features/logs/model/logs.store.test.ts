@@ -12,7 +12,7 @@ describe('Logs store', () => {
 	it('Check state', () => {
 		const logsStore = useLogsStore()
 		expect(Array.isArray(logsStore.logs)).toBe(true)
-		expect(logsStore.sort).toBe('asc')
+		expect(logsStore.sort).toBe('desc')
 	})
 
 	describe('CRUD logs', () => {
@@ -20,7 +20,7 @@ describe('Logs store', () => {
 			const logsStore = useLogsStore()
 			const oldLength = logsStore.logs.length
 			const newLog: Omit<ILogItem, 'id' | 'date'> = {
-				category: v4(),
+				categoryId: '1',
 				money: 123,
 				title: v4(),
 			}

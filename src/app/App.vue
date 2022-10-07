@@ -31,9 +31,9 @@ const themeOverrides = computed(() =>
 
 <template>
 	<n-config-provider :theme="theme" :theme-overrides="themeOverrides">
-		<div class="h-full">
-			<HeaderComponentVue />
-			<main class="p-3">
+		<div class="h-full overflow-hidden">
+			<HeaderComponentVue class="h-16"/>
+			<main class="p-3 h-[calc(100vh-4.5rem)]">
 				<router-view />
 			</main>
 		</div>
@@ -42,7 +42,8 @@ const themeOverrides = computed(() =>
 
 <style>
 #app {
-	height: 100vh;
-	width: 100vw;
+	@apply w-screen;
+	@apply h-screen;
+	@apply overflow-hidden;
 }
 </style>

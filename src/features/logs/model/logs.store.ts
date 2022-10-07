@@ -1,4 +1,5 @@
-import { ILogItem } from '@/shared/types/ILogItem'
+import { categories } from '@/entites/categories'
+import { ILogView, ILogItem } from '@/shared/types/ILogItem'
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
 
@@ -7,6 +8,7 @@ export type SortModeValues = 'asc' | 'desc'
 export interface LogsStoreState {
 	logs: ILogItem[]
 	sort: SortModeValues
+	categoryFilter: string[]
 	isLoading: boolean
 	showPopup: boolean
 	updateId: string | null
@@ -16,14 +18,15 @@ export interface LogsStoreState {
 export const useLogsStore = defineStore({
 	id: 'logs',
 	state: (): LogsStoreState => ({
-		logs: [...Array(50)].map(() => ({
+		logs: [...Array(50)].map((item, index) => ({
 			money: 200,
 			title: 'test',
-			category: 'test',
+			categoryId: (index % 2 + 1).toString(),
 			date: new Date(),
 			id: v4(),
 		})),
-		sort: 'asc',
+		categoryFilter: [],
+		sort: 'desc',
 		isLoading: false,
 		showPopup: false,
 		updateId: null,
@@ -36,7 +39,7 @@ export const useLogsStore = defineStore({
 				date: new Date(),
 				id: v4(),
 			}
-			this.logs.push(log)
+			this.logs = [...this.logs, log]
 			this.showPopup = false
 			return log
 		},
@@ -73,12 +76,41 @@ export const useLogsStore = defineStore({
 		},
 	},
 	getters: {
-		logsView: (state: LogsStoreState): ILogItem[] => {
-			const sortFunction: (a: ILogItem, b: ILogItem) => number =
+		logsView: (state: LogsStoreState): ILogView[] => {
+			const sortFunction: (a: ILogView, b: ILogView) => number =
 				state.sort == 'asc'
 					? (a, b) => a.date.valueOf() - b.date.valueOf()
 					: (a, b) => b.date.valueOf() - a.date.valueOf()
-			return state.logs.sort(sortFunction)
+			const filtredLogs =
+				state.categoryFilter.length > 0
+					? state.logs.filter(({ categoryId }) =>
+							state.categoryFilter.includes(categoryId)
+					  )
+					: state.logs
+			const logs = filtredLogs
+				.map<ILogView>(({ categoryId, ...item }) => {
+					const category = categories.find(({ id }) => categoryId == id)
+					return {
+						...item,
+						category: category?.name,
+						iconSrc: category?.icon,
+					}
+				})
+				.sort(sortFunction)
+			return logs
 		},
 	},
 })
+// export const useLogsView = defineStore('logsView', () => {
+// 	const store = useLogsStore()
+// 	const logsView = computed(() => {
+// 		const sortFunction: (a: ILogItem, b: ILogItem) => number =
+// 			store.sort == 'asc'
+// 				? (a, b) => a.date.valueOf() - b.date.valueOf()
+// 				: (a, b) => b.date.valueOf() - a.date.valueOf()
+// 		const logs = store.logs.sort(sortFunction)
+// 		console.log('logs :>> ', logs)
+// 		return logs
+// 	})
+// 	return {logsView}
+// })

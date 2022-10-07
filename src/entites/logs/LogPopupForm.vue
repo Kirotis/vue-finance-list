@@ -3,6 +3,7 @@ import { ILogItem } from '@/shared/types/ILogItem'
 import { computed, onUpdated, ref } from 'vue'
 import { FormInst, NModal, FormRules } from 'naive-ui'
 import { CheckboxOutline } from '@vicons/ionicons5'
+import { categories } from '../categories'
 
 interface LogModalForm {
 	show: boolean
@@ -12,9 +13,9 @@ interface LogModalForm {
 const props = defineProps<LogModalForm>()
 const formValue = ref({
 	title: '',
-	category: '',
+	categoryId: '',
 	money: 100,
-}) 
+})
 const emit = defineEmits<{
 	(id: 'update:show', value: boolean): void
 	(id: 'sendResult', value: Omit<ILogItem, 'id' | 'date'>): void
@@ -30,6 +31,8 @@ const showModal = computed({
 	},
 })
 
+const options = categories.map(({ id, name }) => ({ value: id, label: name }))
+
 function confirmForm() {
 	formRef.value?.validate(errors => {
 		if (!errors) {
@@ -41,7 +44,7 @@ function confirmForm() {
 onUpdated(() => {
 	formValue.value = {
 		title: props.form.title || '',
-		category: props.form.category || '',
+		categoryId: props.form.categoryId || '1',
 		money: props.form.money || 100,
 	}
 })
@@ -66,10 +69,10 @@ onUpdated(() => {
 				<n-input v-model:value="formValue.title" />
 			</n-form-item>
 			<n-form-item class="m-1 w-full" label="Category" path="category">
-				<n-input v-model:value="formValue.category" />
+				<n-select v-model:value="formValue.categoryId" :options="options"/>
 			</n-form-item>
 			<n-form-item class="m-1 w-full" label="Money" path="money">
-				<n-input-number class="w-full" v-model:value="formValue.money">
+				<n-input-number class="w-full" v-model:value="formValue.money" :min="0">
 					<template #prefix> ♦ </template>
 				</n-input-number>
 			</n-form-item>

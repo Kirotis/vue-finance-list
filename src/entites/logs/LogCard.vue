@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ILogItem } from '@/shared/types/ILogItem'
+import { ILogView } from '@/shared/types/ILogItem'
 import { NImage } from 'naive-ui'
-const props = defineProps<{ item: Partial<ILogItem> }>()
+const props = defineProps<{ item: Partial<ILogView> }>()
 const dateTime = new Date(props.item?.date ?? '')
 </script>
 
@@ -9,11 +9,11 @@ const dateTime = new Date(props.item?.date ?? '')
 	<figure class="log-card">
 		<n-image
 			class="my-auto scale-75 rounded-full"
-			src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
 			alt="none image"
 			width="250"
 			height="250"
 			preview-disabled
+			:src="item.iconSrc"
 		/>
 		<div class="flex w-full flex-col justify-between">
 			<div class="flex justify-between">
@@ -43,12 +43,15 @@ const dateTime = new Date(props.item?.date ?? '')
 <style scoped lang="scss">
 .log-card {
 	@apply p-2;
-	@apply mt-1;
+	// @apply mt-1.5;
 	@apply transition-all;
-	@apply max-w-sm;
-	// @apply w-sm;
-	@apply max-h-40;
-	// @apply h-40;
+	@apply md:w-[20rem];
+	// @apply lg:w-full;
+	// @apply xl:w-full;
+	// @apply w-[20rem];
+	@apply sm:w-[34rem];
+	@apply h-[8rem];
+	// @apply min-w-full;
 
 	@apply rounded;
 	@apply border;
@@ -60,6 +63,7 @@ const dateTime = new Date(props.item?.date ?? '')
 	@apply flex;
 	@apply justify-between;
 
+	@apply sm:hover:-translate-y-0;
 	@apply hover:-translate-y-1;
 	@apply hover:shadow-lg;
 	@apply hover:shadow-primary-2;
