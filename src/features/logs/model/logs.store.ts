@@ -122,10 +122,10 @@ export const useLogsStore = defineStore({
 			})
 
 			const logs = filtredLogs
-				.map<ILogView>(({ categoryId, ...item }) => {
-					const category = categories.find(({ id }) => categoryId == id)
+				.map<ILogView>(log => {
+					const category = categories.find(({ id }) => log.categoryId == id)
 					return {
-						...item,
+						...log,
 						category: category?.name,
 						iconSrc: category?.icon,
 					}
@@ -133,10 +133,10 @@ export const useLogsStore = defineStore({
 				.sort(sortFunction)
 			return logs
 		},
-		chartData: state => {
+		chartData(): { name: string; value: number }[] {
 			return categories.map(({ name, id }) => ({
 				name,
-				value: state.logs
+				value: this.logsView
 					.filter(({ categoryId }) => categoryId == id)
 					.reduce((sum, { money }) => sum + money, 0),
 			}))

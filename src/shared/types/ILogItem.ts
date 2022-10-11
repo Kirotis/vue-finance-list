@@ -1,4 +1,4 @@
-export interface ILogView extends Readonly<Omit<ILogItem, 'categoryId'>>{
+export interface ILogView extends Readonly<ILogItem>{
 	readonly category?: string
 	readonly iconSrc?: string
 }
