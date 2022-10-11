@@ -46,10 +46,12 @@ const dateTime = new Date(props.item?.date ?? '')
 	// @apply mt-1.5;
 	@apply transition-all;
 	@apply md:w-[20rem];
+	// @apply md:min-w-[20rem];
 	// @apply lg:w-full;
 	// @apply xl:w-full;
 	// @apply w-[20rem];
 	@apply sm:w-[34rem];
+	// @apply sm:min-w-[34rem];
 	@apply h-[8rem];
 	// @apply min-w-full;
 

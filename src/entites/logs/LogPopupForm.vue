@@ -23,12 +23,8 @@ const emit = defineEmits<{
 const formRef = ref<FormInst | null>(null)
 const rules: FormRules = {}
 const showModal = computed({
-	get() {
-		return props.show
-	},
-	set(value) {
-		emit('update:show', value)
-	},
+	get: () => props.show,
+	set: (value: boolean) => emit('update:show', value),
 })
 
 const options = categories.map(({ id, name }) => ({ value: id, label: name }))

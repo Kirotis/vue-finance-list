@@ -7,26 +7,41 @@ export type SortModeValues = 'asc' | 'desc'
 
 export interface LogsStoreState {
 	logs: ILogItem[]
-	sort: SortModeValues
-	categoryFilter: string[]
 	isLoading: boolean
 	showPopup: boolean
 	updateId: string | null
 	editableItem: Partial<Omit<ILogItem, 'id' | 'date'>>
+	filter: LogsFilterState
+	showFilterPopup: boolean
+}
+
+export interface LogsFilterState {
+	categoryFilter: string[]
+	sort: SortModeValues
+	search?: string
+	startDate?: Date
+	endDate?: Date
 }
 
 export const useLogsStore = defineStore({
 	id: 'logs',
 	state: (): LogsStoreState => ({
-		logs: [...Array(50)].map((item, index) => ({
-			money: 200,
-			title: 'test',
-			categoryId: (index % 2 + 1).toString(),
-			date: new Date(),
-			id: v4(),
-		})),
-		categoryFilter: [],
-		sort: 'desc',
+		logs: [...Array(50)].map((item, index) => {
+			const date = new Date()
+			date.setDate(date.getDate() - index)
+			return {
+				money: 200,
+				title: 'test' + index,
+				categoryId: ((index % 2) + 1).toString(),
+				date,
+				id: v4(),
+			}
+		}),
+		filter: {
+			categoryFilter: [],
+			sort: 'desc',
+		},
+		showFilterPopup: false,
 		isLoading: false,
 		showPopup: false,
 		updateId: null,
@@ -56,6 +71,15 @@ export const useLogsStore = defineStore({
 				...updateItem,
 			})
 		},
+		updateFilter(
+			event: Pick<LogsFilterState, 'startDate' | 'endDate' | 'categoryFilter'>
+		) {
+			this.filter = {
+				...this.filter,
+				...event,
+			}
+			this.showFilterPopup = false
+		},
 		getLogById(searchId: string): { data: ILogItem; index: number } {
 			const index = this.logs.findIndex(({ id }) => id == searchId)
 			if (index < 0) {
@@ -76,17 +100,24 @@ export const useLogsStore = defineStore({
 		},
 	},
 	getters: {
-		logsView: (state: LogsStoreState): ILogView[] => {
+		logsView: (state): ILogView[] => {
 			const sortFunction: (a: ILogView, b: ILogView) => number =
-				state.sort == 'asc'
+				state.filter.sort == 'asc'
 					? (a, b) => a.date.valueOf() - b.date.valueOf()
 					: (a, b) => b.date.valueOf() - a.date.valueOf()
-			const filtredLogs =
-				state.categoryFilter.length > 0
-					? state.logs.filter(({ categoryId }) =>
-							state.categoryFilter.includes(categoryId)
-					  )
-					: state.logs
+			const filtredLogs = state.logs.filter(({ categoryId, date }) => {
+				const categoryFilter = state.filter.categoryFilter.length
+					? state.filter.categoryFilter.includes(categoryId)
+					: true
+				const startDate = state.filter.startDate
+					? date.valueOf() >= state.filter.startDate.valueOf()
+					: true
+				const endDate = state.filter.endDate
+					? date.valueOf() <= state.filter.endDate.valueOf()
+					: true
+				return categoryFilter && startDate && endDate
+			})
+
 			const logs = filtredLogs
 				.map<ILogView>(({ categoryId, ...item }) => {
 					const category = categories.find(({ id }) => categoryId == id)
@@ -98,6 +129,14 @@ export const useLogsStore = defineStore({
 				})
 				.sort(sortFunction)
 			return logs
+		},
+		chartData: state => {
+			return categories.map(({ name, id }) => ({
+				name,
+				value: state.logs
+					.filter(({ categoryId }) => categoryId == id)
+					.reduce((sum, { money }) => sum + money, 0),
+			}))
 		},
 	},
 })
