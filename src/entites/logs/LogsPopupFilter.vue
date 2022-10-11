@@ -76,10 +76,10 @@ function confirmForm() {
 			:label-width="80"
 			:model="formValue"
 		>
-			<n-form-item class="m-1 w-full" label="Category" path="categoryFilter">
+			<n-form-item class="m-1 !w-full" label="Category" path="categoryFilter">
 				<LogFilter v-model:filter="formValue.categoryFilter"></LogFilter>
 			</n-form-item>
-			<n-form-item class="m-1 w-full" label="Range" path="range">
+			<n-form-item class="m-1 !w-full" label="Range" path="range">
 				<n-date-picker
 					v-model:value="formValue.range"
 					type="datetimerange"

@@ -3,7 +3,7 @@ import LogCard from '@/entites/logs/LogCard.vue'
 import SortButton from '@/entites/logs/SortButton.vue'
 import { useLogsStore } from './model/logs.store'
 import LogPopupForm from '@/entites/logs/LogPopupForm.vue'
-import { Add, Filter } from '@vicons/ionicons5'
+import { Add, Filter, Search } from '@vicons/ionicons5'
 import { ILogItem } from '@/shared/types/ILogItem'
 import { useVirtualList } from '@vueuse/core'
 import { computed } from 'vue'
@@ -27,13 +27,22 @@ const { list, containerProps, wrapperProps } = useVirtualList(computedList, {
 <template>
 	<div class="container mx-auto flex h-full flex-col">
 		<div class="flex justify-between gap-2">
-			<div class="min-w-80 w-80">
+			<div class="min-w-80 flex w-80 gap-2">
 				<!-- <LogFilter v-model:filter="store.filter.categoryFilter"></LogFilter> -->
 				<n-button @click="store.showFilterPopup = true" secondary>
 					<template #icon>
 						<n-icon :component="Filter" />
 					</template>
 				</n-button>
+				<n-input
+					v-model:value="store.filter.search"
+					title="Search"
+					placeholder="Search"
+				>
+					<template #prefix>
+						<n-icon :component="Search"></n-icon>
+					</template>
+				</n-input>
 			</div>
 			<div class="flex gap-2">
 				<SortButton v-model:sortMode="store.filter.sort"></SortButton>
@@ -45,12 +54,13 @@ const { list, containerProps, wrapperProps } = useVirtualList(computedList, {
 				</n-button>
 			</div>
 		</div>
-		<div class="h-max" v-bind="containerProps">
+		<div class="h-full" v-bind="containerProps">
 			<div class="logs-list" v-bind="wrapperProps">
 				<LogCard
 					v-for="{ data } in list"
 					:key="data.id"
 					:item="data"
+					:search-text="store.filter.search"
 					@click.stop="store.startUpdate(data.id)"
 				></LogCard>
 			</div>

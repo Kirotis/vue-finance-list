@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ILogView } from '@/shared/types/ILogItem'
 import { NImage } from 'naive-ui'
-const props = defineProps<{ item: Partial<ILogView> }>()
+import { computed } from 'vue'
+const props = defineProps<{ item: Partial<ILogView>; searchText?: string }>()
 const dateTime = new Date(props.item?.date ?? '')
+const isSearchedText = computed<boolean>(
+	() =>
+		(props.searchText && props.item?.title?.includes(props.searchText)) || false
+)
 </script>
 
 <template>
@@ -26,6 +31,9 @@ const dateTime = new Date(props.item?.date ?? '')
 			</div>
 			<caption
 				class="break-after-column overflow-y-auto overscroll-y-auto text-left"
+				:class="{
+					'font-bold underline decoration-yellow-300': isSearchedText,
+				}"
 			>
 				{{
 					item.title

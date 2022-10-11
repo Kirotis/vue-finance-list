@@ -105,7 +105,7 @@ export const useLogsStore = defineStore({
 				state.filter.sort == 'asc'
 					? (a, b) => a.date.valueOf() - b.date.valueOf()
 					: (a, b) => b.date.valueOf() - a.date.valueOf()
-			const filtredLogs = state.logs.filter(({ categoryId, date }) => {
+			const filtredLogs = state.logs.filter(({ categoryId, date, title }) => {
 				const categoryFilter = state.filter.categoryFilter.length
 					? state.filter.categoryFilter.includes(categoryId)
 					: true
@@ -115,7 +115,10 @@ export const useLogsStore = defineStore({
 				const endDate = state.filter.endDate
 					? date.valueOf() <= state.filter.endDate.valueOf()
 					: true
-				return categoryFilter && startDate && endDate
+				const search = state.filter.search
+					? title.includes(state.filter.search)
+					: true
+				return categoryFilter && startDate && endDate && search
 			})
 
 			const logs = filtredLogs

@@ -61,13 +61,13 @@ onUpdated(() => {
 			:model="formValue"
 			:rules="rules"
 		>
-			<n-form-item class="m-1 w-full" label="Title" path="title">
+			<n-form-item class="m-1 !w-full" label="Title" path="title">
 				<n-input v-model:value="formValue.title" />
 			</n-form-item>
-			<n-form-item class="m-1 w-full" label="Category" path="category">
+			<n-form-item class="m-1 !w-full" label="Category" path="category">
 				<n-select v-model:value="formValue.categoryId" :options="options"/>
 			</n-form-item>
-			<n-form-item class="m-1 w-full" label="Money" path="money">
+			<n-form-item class="m-1 !w-full" label="Money" path="money">
 				<n-input-number class="w-full" v-model:value="formValue.money" :min="0">
 					<template #prefix> ♦ </template>
 				</n-input-number>
