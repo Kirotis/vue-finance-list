@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { LogsFilterState } from '@/features/logs/model/logs.store'
-import { CheckboxOutline } from '@vicons/ionicons5'
+import { CheckboxOutline, Search } from '@vicons/ionicons5'
 import { FormInst, NModal, NDatePicker } from 'naive-ui'
 import { computed, onUpdated, ref } from 'vue'
 import LogFilter from '@/entites/logs/LogFilter.vue'
 
 type LogFilterForm = Pick<
 	LogsFilterState,
-	'startDate' | 'endDate' | 'categoryFilter'
+	'startDate' | 'endDate' | 'categoryFilter' | 'search'
 >
 
 interface LogPopupFormProps {
@@ -20,11 +20,13 @@ const formRef = ref<FormInst | null>(null)
 const formValue = ref<{
 	range?: [number, number] | null
 	categoryFilter: string[]
+	search: string
 }>({
 	// startDate: undefined,
 	// endDate: undefined,
 	range: null,
 	categoryFilter: [],
+	search: '',
 })
 const emit = defineEmits<{
 	(event: 'update:show', value: boolean): void
@@ -46,6 +48,7 @@ onUpdated(() => {
 				  ]
 				: null,
 		categoryFilter: props.filter.categoryFilter || [],
+		search: props.filter.search || '',
 	}
 })
 function confirmForm() {
@@ -56,6 +59,7 @@ function confirmForm() {
 				startDate: firstDate ? new Date(firstDate) : undefined,
 				endDate: lastDate ? new Date(lastDate) : undefined,
 				categoryFilter: formValue.value.categoryFilter || [],
+				search: formValue.value.search,
 			})
 		}
 	})
@@ -76,6 +80,21 @@ function confirmForm() {
 			:label-width="80"
 			:model="formValue"
 		>
+			<n-form-item
+				class="m-1 block !w-full md:hidden"
+				label="Search"
+				path="search"
+			>
+				<n-input
+					v-model:value="formValue.search"
+					title="Search"
+					placeholder="Search"
+				>
+					<template #prefix>
+						<n-icon :component="Search"></n-icon>
+					</template>
+				</n-input>
+			</n-form-item>
 			<n-form-item class="m-1 !w-full" label="Category" path="categoryFilter">
 				<LogFilter v-model:filter="formValue.categoryFilter"></LogFilter>
 			</n-form-item>

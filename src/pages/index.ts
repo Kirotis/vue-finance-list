@@ -4,13 +4,13 @@ const routes: ReadonlyArray<RouteRecordRaw> = [
 	{
 		path: '/',
 		name: 'home',
-		component: () => import(/* webpackChunkName: "home" */ './LogsPage.vue'),
+		component: () => import('./LogsPage.vue'),
 	},
-	{
-	  path: '/chart',
-	  name: 'chart',
-	  component: () => import(/* webpackChunkName: "chart" */ './ChartPage.vue')
-	}
+	// {
+	//   path: '/chart',
+	//   name: 'chart',
+	//   component: () => import(/* webpackChunkName: "chart" */ './ChartPage.vue')
+	// }
 ]
 
 const router = createRouter({
