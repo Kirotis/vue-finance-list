@@ -16,7 +16,7 @@ describe('Logs store', () => {
 	})
 
 	describe('CRUD logs', () => {
-		function createLog() {
+		async function createLog() {
 			const logsStore = useLogsStore()
 			const oldLength = logsStore.logs.length
 			const newLog: Omit<ILogItem, 'id' | 'date'> = {
@@ -24,7 +24,7 @@ describe('Logs store', () => {
 				money: 123,
 				title: v4(),
 			}
-			const createdLog = logsStore.addLog(newLog)
+			const createdLog = await logsStore.addLog(newLog)
 			expect(createdLog).toEqual(expect.objectContaining(newLog))
 
 			expect(logsStore.logs.length).toBe(oldLength + 1)
@@ -36,14 +36,14 @@ describe('Logs store', () => {
 		it('Add log', () => {
 			createLog()
 		})
-		it('Update log', () => {
+		it('Update log', async () => {
 			const logsStore = useLogsStore()
-			const log = createLog()
+			const log = await createLog()
 			const updateLog: ILogItem = {
 				...log,
 				title: v4(),
 			}
-			logsStore.updateLog(log.id, updateLog)
+			await logsStore.updateLog(log.id, updateLog)
 
 			expect(logsStore.logs).not.toEqual(
 				expect.arrayContaining([expect.objectContaining(log)])
@@ -54,9 +54,9 @@ describe('Logs store', () => {
 
 			expect(() => logsStore.updateLog(v4(), updateLog)).toThrowError()
 		})
-		it('Remove log', () => {
+		it('Remove log', async () => {
 			const logsStore = useLogsStore()
-			const addedItem = createLog()
+			const addedItem = await createLog()
 			logsStore.removeLog(addedItem.id)
 			expect(logsStore.logs).not.toEqual(
 				expect.arrayContaining([expect.objectContaining(addedItem)])

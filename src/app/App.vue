@@ -4,7 +4,6 @@ import { useThemeStore } from '@/features/header/model/theme.store'
 import { darkTheme } from 'naive-ui'
 import { computed, onMounted } from 'vue'
 // import colors from 'tailwindcss/colors'
-
 const store = useThemeStore()
 
 onMounted(() => store.initTheme())

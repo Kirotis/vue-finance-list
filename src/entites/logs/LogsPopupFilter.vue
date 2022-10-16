@@ -4,6 +4,7 @@ import { CheckboxOutline, Search } from '@vicons/ionicons5'
 import { FormInst, NModal, NDatePicker } from 'naive-ui'
 import { computed, onUpdated, ref } from 'vue'
 import LogFilter from '@/entites/logs/LogFilter.vue'
+import { ICategories } from '../categories'
 
 type LogFilterForm = Pick<
 	LogsFilterState,
@@ -13,6 +14,7 @@ type LogFilterForm = Pick<
 interface LogPopupFormProps {
 	filter: LogFilterForm
 	show: boolean
+	categories: ICategories[]
 }
 
 const props = defineProps<LogPopupFormProps>()
@@ -96,7 +98,10 @@ function confirmForm() {
 				</n-input>
 			</n-form-item>
 			<n-form-item class="m-1 !w-full" label="Category" path="categoryFilter">
-				<LogFilter v-model:filter="formValue.categoryFilter"></LogFilter>
+				<LogFilter
+					v-model:filter="formValue.categoryFilter"
+					:categories="categories"
+				></LogFilter>
 			</n-form-item>
 			<n-form-item class="m-1 !w-full" label="Range" path="range">
 				<n-date-picker

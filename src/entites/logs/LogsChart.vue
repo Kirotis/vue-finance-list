@@ -4,12 +4,22 @@ import { Chart, Responsive, Pie, Tooltip } from 'vue3-charts'
 interface LogChartProps {
 	data: { name: string; value: number }[]
 }
-defineProps<LogChartProps>()
+const props = defineProps<LogChartProps>()
 // const logStore = useLogsStore()
+const axis = {
+	primary: {
+		domain: props.data.map(({ name }) => name),
+		type: 'band',
+	},
+	secondary: {
+		domain: props.data.map(({ name }) => name),
+		type: 'linear',
+	},
+}
 </script>
 
 <template>
-	<Responsive class="container mx-auto flex items-center p-4">
+	<Responsive class="p-4">
 		<template #main="{ width }">
 			<Chart
 				direction="circular"
@@ -21,6 +31,7 @@ defineProps<LogChartProps>()
 					right: 0,
 					bottom: 20,
 				}"
+				:axis="axis"
 				:config="{ controlHover: false }"
 			>
 				<template #layers>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { NSelect } from 'naive-ui'
 import { computed, ref } from 'vue'
-import { categories } from '../categories'
+import { ICategories } from '../categories'
 import { Search } from '@vicons/ionicons5'
 
 export interface ILogFilter {
 	filter: string[]
+	categories: ICategories[]
 }
 
 const props = defineProps<ILogFilter>()
@@ -23,7 +24,10 @@ const filterValue = computed({
 	},
 })
 
-const options = categories.map(({ id, name }) => ({ value: id, label: name }))
+const options = computed(
+	() =>
+		props.categories?.map(({ id, name }) => ({ value: id, label: name })) ?? []
+)
 
 const show = ref<boolean>(false)
 </script>
