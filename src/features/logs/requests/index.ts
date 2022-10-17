@@ -1,17 +1,11 @@
-import { ICategories } from '@/entites/categories'
+import { constructBaseRequest } from '@/shared/lib'
 import { ILogItem } from '@/shared/types/ILogItem'
 import { LogsFilterState } from '../model/logs.store'
-import { constructBaseRequest } from './constructBaseRequest'
 
 const logBaseRequest = constructBaseRequest('log')
-const categoryBaseRequest = constructBaseRequest('categories')
 
 export function getLogs(filter: LogsFilterState): Promise<ILogItem[]> {
 	return logBaseRequest<ILogItem[]>('POST', 'filter', filter).catch(() => [])
-}
-
-export function getCategories(): Promise<ICategories[]> {
-	return categoryBaseRequest<ICategories[]>('GET').catch(() => [])
 }
 
 export function editLog(

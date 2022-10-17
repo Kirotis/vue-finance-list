@@ -2,11 +2,9 @@
 import LogCard from '@/entites/logs/LogCard.vue'
 import { useLogsStore } from './model/logs.store'
 import { useVirtualList } from '@vueuse/core'
-import { computed, onMounted, watch } from 'vue'
+import { computed, watch } from 'vue'
 
 const store = useLogsStore()
-
-onMounted(() => store.initStore())
 
 const computedList = computed(() => [...store.logsView])
 
@@ -19,14 +17,13 @@ const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(
 
 watch(computedList, () => {
 	scrollTo(0)
-	// store.loadLogs()
 })
-// const showChart = ref<boolean>(false)
 </script>
 
 <template>
 	<div class="h-full md:flex">
-		<div v-bind="containerProps" class="h-full w-full md:block">
+		<n-spin size="large" v-if="store.isLoading" />
+		<div v-bind="containerProps" class="h-full w-full md:block" v-else>
 			<div class="logs-list" v-bind="wrapperProps">
 				<LogCard
 					v-for="{ data } in list"

@@ -44,7 +44,7 @@ function confirmForm() {
 onUpdated(() => {
 	formValue.value = {
 		title: props.form.title || '',
-		categoryId: props.form.categoryId || '1',
+		categoryId: props.form.categoryId || '',
 		money: props.form.money || 100,
 	}
 })

@@ -6,11 +6,11 @@ const routes: ReadonlyArray<RouteRecordRaw> = [
 		name: 'home',
 		component: () => import('./LogsPage.vue'),
 	},
-	// {
-	//   path: '/chart',
-	//   name: 'chart',
-	//   component: () => import(/* webpackChunkName: "chart" */ './ChartPage.vue')
-	// }
+	{
+	  path: '/categories',
+	  name: 'categories',
+	  component: () => import(/* webpackChunkName: "categories" */ './CategoriesPage.vue')
+	}
 ]
 
 const router = createRouter({

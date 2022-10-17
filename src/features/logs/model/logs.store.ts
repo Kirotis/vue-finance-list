@@ -1,7 +1,8 @@
-import { ICategories } from '@/entites/categories'
+import { ICategory } from '@/entites/categories'
 import { ILogView, ILogItem } from '@/shared/types/ILogItem'
 import { defineStore } from 'pinia'
-import { getLogs, getCategories, createLog, editLog } from '../requests'
+import { getLogs, createLog, editLog } from '../requests'
+import { getCategories } from '@/features/categories/requests'
 
 export type SortModeValues = 'asc' | 'desc'
 
@@ -13,7 +14,7 @@ export interface LogsStoreState {
 	editableItem: Partial<Omit<ILogItem, 'id' | 'date'>>
 	filter: LogsFilterState
 	showFilterPopup: boolean
-	categories: ICategories[]
+	categories: ICategory[]
 	formLoading: boolean
 }
 
