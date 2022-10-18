@@ -1,8 +1,8 @@
-import { ICategory } from '@/entites/categories'
 import { ILogView, ILogItem } from '@/shared/types/ILogItem'
 import { defineStore } from 'pinia'
 import { getLogs, createLog, editLog } from '../requests'
 import { getCategories } from '@/features/categories/requests'
+import { useCategoryStore } from '@/features/categories/model/categories.store'
 
 export type SortModeValues = 'asc' | 'desc'
 
@@ -14,7 +14,6 @@ export interface LogsStoreState {
 	editableItem: Partial<Omit<ILogItem, 'id' | 'date'>>
 	filter: LogsFilterState
 	showFilterPopup: boolean
-	categories: ICategory[]
 	formLoading: boolean
 }
 
@@ -39,7 +38,6 @@ export const useLogsStore = defineStore({
 		showPopup: false,
 		updateId: null,
 		editableItem: {},
-		categories: [],
 		formLoading: false,
 	}),
 	actions: {
@@ -57,8 +55,12 @@ export const useLogsStore = defineStore({
 			await this.loadLogs()
 			this.isLoading = false
 		},
-		async initCategories() {
-			return (this.categories = await getCategories())
+		initCategories() {
+			const store = useCategoryStore()
+			console.log('store.categories :>> ', store.categories)
+			if (!store.categories?.length) {
+				return store.loadCategories()
+			}
 		},
 		addLog(newLog: Omit<ILogItem, 'id' | 'date'>): Promise<ILogItem> {
 			this.formLoading = true
@@ -108,8 +110,8 @@ export const useLogsStore = defineStore({
 		startUpdate(id: string) {
 			const { data } = this.getLogById(id)
 			this.editableItem = { ...data }
-			this.showPopup = true
 			this.updateId = id
+			this.showPopup = true
 		},
 		startCreate() {
 			this.editableItem = {}
@@ -119,8 +121,9 @@ export const useLogsStore = defineStore({
 	},
 	getters: {
 		logsView: (state): ILogView[] => {
+			const store = useCategoryStore()
 			const logs = state.logs.map<ILogView>(log => {
-				const category = state.categories.find(({ id }) => log.categoryId == id)
+				const category = store.categories.find(({ id }) => log.categoryId == id)
 				return {
 					...log,
 					category: category?.name,

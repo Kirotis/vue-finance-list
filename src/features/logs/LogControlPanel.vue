@@ -5,8 +5,10 @@ import SortButton from '@/entites/logs/SortButton.vue'
 import LogsPopupFilter from '@/entites/logs/LogsPopupFilter.vue'
 import LogPopupForm from '@/entites/logs/LogPopupForm.vue'
 import { ILogItem } from '@/shared/types/ILogItem'
+import { useCategoryStore } from '../categories/model/categories.store'
 
 const store = useLogsStore()
+const categoryStore = useCategoryStore()
 
 function popupResult(event: Omit<ILogItem, 'id' | 'date'>) {
 	if (store.updateId) {
@@ -52,13 +54,13 @@ function popupResult(event: Omit<ILogItem, 'id' | 'date'>) {
 	<LogPopupForm
 		v-model:show="store.showPopup"
 		:form="store.editableItem"
-		:categories="store.categories"
+		:categories="categoryStore.categories"
 		:loading="store.formLoading"
 		@sendResult="popupResult"
 	></LogPopupForm>
 	<LogsPopupFilter
 		v-model:show="store.showFilterPopup"
-		:categories="store.categories"
+		:categories="categoryStore.categories"
 		:filter="store.filter"
 		@sendResult="store.updateFilter"
 	></LogsPopupFilter>

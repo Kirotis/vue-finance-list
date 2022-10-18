@@ -11,7 +11,7 @@ const computedList = computed(() => [...store.logsView])
 const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(
 	computedList,
 	{
-		itemHeight: 132,
+		itemHeight: 144,
 	}
 )
 

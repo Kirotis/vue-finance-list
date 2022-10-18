@@ -1,25 +1,31 @@
 <script setup lang="ts">
 import HeaderComponentVue from '@/features/header/HeaderComponent.vue'
 import { useThemeStore } from '@/features/header/model/theme.store'
-import { darkTheme } from 'naive-ui'
+import { darkTheme, GlobalThemeOverrides } from 'naive-ui'
 import { computed, onMounted } from 'vue'
-// import colors from 'tailwindcss/colors'
+import colors from 'tailwindcss/colors'
 const store = useThemeStore()
 
 onMounted(() => store.initTheme())
 
-// const lightThemeOverrides: GlobalThemeOverrides = {}
+const lightThemeOverrides: GlobalThemeOverrides = {}
 
-// const darkThemeOverrides: GlobalThemeOverrides = {}
+const darkThemeOverrides: GlobalThemeOverrides = {
+	DataTable: {
+		thColor: colors.slate[800],
+		tdColor: colors.slate[600],
+		tdColorHover: colors.slate[700],
+	},
+}
 
 const theme = computed(() => (store.currentTheme == 'dark' ? darkTheme : null))
-// const themeOverrides = computed(() =>
-// 	store.currentTheme == 'dark' ? darkThemeOverrides : lightThemeOverrides
-// )
+const themeOverrides = computed(() =>
+	store.currentTheme == 'dark' ? darkThemeOverrides : lightThemeOverrides
+)
 </script>
 
 <template>
-	<n-config-provider :theme="theme">
+	<n-config-provider :theme="theme" :theme-overrides="themeOverrides">
 		<div class="h-full overflow-hidden">
 			<HeaderComponentVue class="h-16" />
 			<main class="h-[calc(100vh-4.5rem)] p-3">

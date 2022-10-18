@@ -13,19 +13,19 @@ const isSearchedText = computed<boolean>(
 <template>
 	<figure class="log-card">
 		<n-image
-			class="my-auto scale-75 rounded-full"
+			class="my-auto w-3/12 scale-75 rounded-full"
 			alt="none image"
-			width="250"
-			height="250"
+			width="120"
+			height="120"
 			preview-disabled
 			:src="item.iconSrc"
 		/>
-		<div class="flex w-full flex-col justify-between">
-			<div class="flex justify-between">
-				<figcaption class="text-2xl">
+		<div class="flex w-9/12 flex-col justify-between">
+			<div class="flex w-full justify-between">
+				<figcaption class="truncate text-2xl">
 					{{ item.category || 'None' }}
 				</figcaption>
-				<strong class="text-3xl">
+				<strong class="text-end text-3xl">
 					{{ item.money }}
 				</strong>
 			</div>
@@ -57,7 +57,7 @@ const isSearchedText = computed<boolean>(
 	// @apply md:min-w-[20rem];
 	// @apply lg:w-full;
 	// @apply xl:w-full;
-	// @apply w-[20rem];
+	@apply w-[20rem];
 	@apply sm:w-[34rem];
 	// @apply sm:min-w-[34rem];
 	@apply h-[8rem];

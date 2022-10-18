@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NSelect } from 'naive-ui'
 import { computed, ref } from 'vue'
-import { ICategories } from '../categories'
+import { ICategories } from '../../shared/types'
 import { Search } from '@vicons/ionicons5'
 
 export interface ILogFilter {

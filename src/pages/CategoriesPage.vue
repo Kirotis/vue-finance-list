@@ -2,9 +2,19 @@
 import { useCategoryStore } from '@/features/categories/model/categories.store'
 import { NButton, NIcon } from 'naive-ui'
 import { Component, h, onMounted } from 'vue'
-import { Pencil, Settings } from '@vicons/ionicons5'
+import { Pencil, TrashBin, Add } from '@vicons/ionicons5'
+import { TableColumns } from 'naive-ui/es/data-table/src/interface'
+import { ICategory } from '@/shared/types'
+import CategoryPopupForm from '@/entites/categories/CategoryPopupForm.vue'
 
 const store = useCategoryStore()
+
+function popupResult(event: Pick<ICategory, 'name' | 'image'>) {
+	if (store.updateId) {
+		return store.edit(store.updateId, event)
+	}
+	return store.create(event)
+}
 
 function renderCellButton(iconComponent: Component, onClick?: () => void) {
 	return h(
@@ -23,21 +33,23 @@ function renderCellButton(iconComponent: Component, onClick?: () => void) {
 	)
 }
 
-const columns = [
-	{
-		title: 'Id',
-		key: 'id',
-	},
+const columns: TableColumns<ICategory> = [
 	{
 		title: 'Name',
 		key: 'name',
 	},
+	// {
+	// 	title: 'Id',
+	// 	key: 'id',
+	// },
 	{
-		title: 'Actions',
+		title: '',
 		key: 'actions',
-		render: () => [
-			renderCellButton(Pencil, console.log),
-			renderCellButton(Settings, console.log),
+		width: 120,
+		align: 'center',
+		render: ({ id }) => [
+			renderCellButton(Pencil, () => store.startEdit(id)),
+			renderCellButton(TrashBin, () => store.deleteCategory(id)),
 		],
 	},
 ]
@@ -47,6 +59,20 @@ onMounted(() => store.loadCategories())
 
 <template>
 	<div class="container mx-auto flex h-full flex-col">
+		<div class="flex">
+			<n-button @click="store.startCreate" secondary>
+				<template #icon>
+					<n-icon :component="Add" />
+				</template>
+				Add log
+			</n-button>
+		</div>
 		<n-data-table :columns="columns" :data="store.categories" />
+		<CategoryPopupForm
+			v-model:show="store.showPopup"
+			:form="store.editableItem"
+			:loading="store.loadingPopup"
+			@send-result="popupResult"
+		></CategoryPopupForm>
 	</div>
 </template>

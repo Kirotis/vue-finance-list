@@ -1,26 +1,23 @@
-<script lang="ts" setup>
-import { ILogItem } from '@/shared/types/ILogItem'
+<script setup lang="ts">
 import { computed, onUpdated, ref } from 'vue'
 import { FormInst, NModal, FormRules } from 'naive-ui'
 import { CheckboxOutline } from '@vicons/ionicons5'
 import { ICategory } from '@/shared/types'
 
-interface LogModalForm {
+interface CategoryModalForm {
 	show: boolean
-	categories?: ICategory[]
-	form: Partial<Omit<ILogItem, 'id' | 'date'>>
+	form: Partial<Pick<ICategory, 'name' | 'image'>>
 	loading: boolean
 }
 
-const props = defineProps<LogModalForm>()
+const props = defineProps<CategoryModalForm>()
 const formValue = ref({
-	title: '',
-	categoryId: '',
-	money: 100,
+	name: '',
+	image: '',
 })
 const emit = defineEmits<{
 	(id: 'update:show', value: boolean): void
-	(id: 'sendResult', value: Omit<ILogItem, 'id' | 'date'>): void
+	(id: 'sendResult', value: Pick<ICategory, 'name' | 'image'>): void
 }>()
 const formRef = ref<FormInst | null>(null)
 const rules: FormRules = {}
@@ -29,10 +26,6 @@ const showModal = computed({
 	set: (value: boolean) => emit('update:show', value),
 })
 
-const options = computed(
-	() =>
-		props.categories?.map(({ id, name }) => ({ value: id, label: name })) ?? []
-)
 function confirmForm() {
 	formRef.value?.validate(errors => {
 		if (!errors) {
@@ -43,9 +36,8 @@ function confirmForm() {
 
 onUpdated(() => {
 	formValue.value = {
-		title: props.form.title || '',
-		categoryId: props.form.categoryId || '',
-		money: props.form.money || 100,
+		image: props.form?.image || '',
+		name: props.form?.name || '',
 	}
 })
 </script>
@@ -66,16 +58,11 @@ onUpdated(() => {
 			:model="formValue"
 			:rules="rules"
 		>
-			<n-form-item class="m-1 !w-full" label="Title" path="title">
-				<n-input v-model:value="formValue.title" />
+			<n-form-item class="m-1 !w-full" label="Name" path="name">
+				<n-input v-model:value="formValue.name" />
 			</n-form-item>
-			<n-form-item class="m-1 !w-full" label="Category" path="category">
-				<n-select v-model:value="formValue.categoryId" :options="options" />
-			</n-form-item>
-			<n-form-item class="m-1 !w-full" label="Money" path="money">
-				<n-input-number class="w-full" v-model:value="formValue.money" :min="0">
-					<template #prefix> ♦ </template>
-				</n-input-number>
+			<n-form-item class="m-1 !w-full" label="Image" path="image">
+				<n-input v-model:value="formValue.image" />
 			</n-form-item>
 		</n-form>
 

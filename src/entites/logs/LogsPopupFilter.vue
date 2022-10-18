@@ -4,7 +4,7 @@ import { CheckboxOutline, Search } from '@vicons/ionicons5'
 import { FormInst, NModal, NDatePicker } from 'naive-ui'
 import { computed, onUpdated, ref } from 'vue'
 import LogFilter from '@/entites/logs/LogFilter.vue'
-import { ICategories } from '../categories'
+import { ICategories } from '../../shared/types'
 
 type LogFilterForm = Pick<
 	LogsFilterState,
