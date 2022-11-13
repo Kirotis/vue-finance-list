@@ -1,7 +1,6 @@
 import { ILogView, ILogItem } from '@/shared/types/ILogItem'
 import { defineStore } from 'pinia'
-import { getLogs, createLog, editLog } from '../requests'
-import { getCategories } from '@/features/categories/requests'
+import { getLogs, createLog, editLog, getLogsPagination } from '../requests'
 import { useCategoryStore } from '@/features/categories/model/categories.store'
 
 export type SortModeValues = 'asc' | 'desc'
@@ -49,15 +48,25 @@ export const useLogsStore = defineStore({
 					this.isLoading = false
 				})
 		},
+		loadLogsPagination(currentItems = 0) {
+			this.isLoading = true
+			return getLogsPagination(this.filter, currentItems, 20)
+				.then(items => {
+					this.logs.push(...items)
+					return this.logs
+				})
+				.finally(() => {
+					this.isLoading = false
+				})
+		},
 		async initStore() {
 			this.isLoading = true
 			await this.initCategories()
-			await this.loadLogs()
+			await this.loadLogsPagination()
 			this.isLoading = false
 		},
 		initCategories() {
 			const store = useCategoryStore()
-			console.log('store.categories :>> ', store.categories)
 			if (!store.categories?.length) {
 				return store.loadCategories()
 			}

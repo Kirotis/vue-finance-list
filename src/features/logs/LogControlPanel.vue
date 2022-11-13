@@ -39,6 +39,7 @@ function popupResult(event: Omit<ILogItem, 'id' | 'date'>) {
 			</n-input>
 		</div>
 		<div class="flex gap-2">
+			<n-spin size="small" v-if="store.isLoading" />
 			<SortButton
 				v-model:sortMode="store.filter.sort"
 				@update:sort-mode="store.loadLogs"

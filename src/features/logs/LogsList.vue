@@ -1,39 +1,31 @@
 <script setup lang="ts">
 import LogCard from '@/entites/logs/LogCard.vue'
 import { useLogsStore } from './model/logs.store'
-import { useVirtualList } from '@vueuse/core'
-import { computed, watch } from 'vue'
+import { useInfiniteScroll, useVirtualList } from '@vueuse/core'
+import { ref } from 'vue'
 
 const store = useLogsStore()
 
-const computedList = computed(() => [...store.logsView])
-
-const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(
-	computedList,
-	{
-		itemHeight: 144,
-	}
+const logsElement = ref<HTMLElement>()
+useVirtualList
+useInfiniteScroll(
+	logsElement,
+	() => {
+		store.loadLogsPagination(store.logs.length)
+	},
+	{ distance: 20 }
 )
-
-watch(computedList, () => {
-	scrollTo(0)
-})
 </script>
 
 <template>
-	<div class="h-full md:flex">
-		<n-spin size="large" v-if="store.isLoading" />
-		<div v-bind="containerProps" class="h-full w-full md:block" v-else>
-			<div class="logs-list" v-bind="wrapperProps">
-				<LogCard
-					v-for="{ data } in list"
-					:key="data.id"
-					:item="data"
-					:search-text="store.filter.search"
-					@click.stop="store.startUpdate(data.id)"
-				></LogCard>
-			</div>
-		</div>
+	<div class="logs-list" ref="logsElement">
+		<LogCard
+			v-for="data in store.logsView"
+			:key="data.id"
+			:item="data"
+			:search-text="store.filter.search"
+			@click.stop="store.startUpdate(data.id)"
+		></LogCard>
 	</div>
 </template>
 
@@ -43,12 +35,15 @@ watch(computedList, () => {
 	@apply flex-col;
 	@apply xl:items-center;
 	@apply md:items-center;
+	@apply overflow-y-auto;
+	@apply h-full;
+	@apply w-full;
 	// @apply xl:items-center;
 	@apply sm:items-stretch;
 	@apply gap-4;
 	@apply items-center;
 	@apply justify-start;
 	@apply py-1;
-	@apply my-1;
+	@apply my-5;
 }
 </style>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { LogsFilterState } from '@/features/logs/model/logs.store'
 import { CheckboxOutline, Search } from '@vicons/ionicons5'
-import { FormInst, NModal, NDatePicker } from 'naive-ui'
+import { FormInst, NModal, NDatePicker, FormRules } from 'naive-ui'
 import { computed, onUpdated, ref } from 'vue'
 import LogFilter from '@/entites/logs/LogFilter.vue'
-import { ICategories } from '../../shared/types'
+import { ICategory } from '../../shared/types'
 
 type LogFilterForm = Pick<
 	LogsFilterState,
@@ -14,19 +14,19 @@ type LogFilterForm = Pick<
 interface LogPopupFormProps {
 	filter: LogFilterForm
 	show: boolean
-	categories: ICategories[]
+	categories: ICategory[]
 }
 
 const props = defineProps<LogPopupFormProps>()
 const formRef = ref<FormInst | null>(null)
 const formValue = ref<{
-	range?: [number, number] | null
 	categoryFilter: string[]
 	search: string
+	startDate?: number
+	endDate?: number
 }>({
-	// startDate: undefined,
-	// endDate: undefined,
-	range: null,
+	startDate: undefined,
+	endDate: undefined,
 	categoryFilter: [],
 	search: '',
 })
@@ -40,15 +40,27 @@ const showModal = computed({
 	set: (value: boolean) => emit('update:show', value),
 })
 
+const validator = () =>
+	formValue.value.startDate &&
+	formValue.value.endDate &&
+	formValue.value.startDate > formValue.value.endDate
+		? new Error('End date must be greater than start date')
+		: true
+const rules: FormRules = {
+	startDate: {
+		validator,
+		trigger: ['input', 'blur']
+	},
+	endDate: {
+		validator,
+		trigger: ['input', 'blur']
+	},
+}
+
 onUpdated(() => {
 	formValue.value = {
-		range:
-			props.filter.startDate && props.filter.endDate
-				? [
-						props.filter.startDate?.valueOf() ?? 0,
-						props.filter.endDate?.valueOf() ?? Date.now(),
-				  ]
-				: null,
+		startDate: props.filter.startDate?.valueOf(),
+		endDate: props.filter.endDate?.valueOf(),
 		categoryFilter: props.filter.categoryFilter || [],
 		search: props.filter.search || '',
 	}
@@ -56,7 +68,8 @@ onUpdated(() => {
 function confirmForm() {
 	formRef.value?.validate(errors => {
 		if (!errors) {
-			const [firstDate, lastDate] = formValue.value.range || []
+			const firstDate = formValue.value.startDate
+			const lastDate = formValue.value.endDate
 			return emit('sendResult', {
 				startDate: firstDate ? new Date(firstDate) : undefined,
 				endDate: lastDate ? new Date(lastDate) : undefined,
@@ -78,6 +91,7 @@ function confirmForm() {
 		<n-form
 			class="flex flex-col items-stretch"
 			ref="formRef"
+			:rules="rules"
 			inline
 			:label-width="80"
 			:model="formValue"
@@ -103,10 +117,19 @@ function confirmForm() {
 					:categories="categories"
 				></LogFilter>
 			</n-form-item>
-			<n-form-item class="m-1 !w-full" label="Range" path="range">
+			<n-form-item class="m-1 !w-full" label="Start date" path="startDate">
 				<n-date-picker
-					v-model:value="formValue.range"
-					type="datetimerange"
+					class="!w-full"
+					v-model:value="formValue.startDate"
+					type="datetime"
+					clearable
+				/>
+			</n-form-item>
+			<n-form-item class="m-1 !w-full" label="End date" path="endDate">
+				<n-date-picker
+					class="!w-full"
+					v-model:value="formValue.endDate"
+					type="datetime"
 					clearable
 				/>
 			</n-form-item>

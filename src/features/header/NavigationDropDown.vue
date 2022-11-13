@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/pages'
 import { Component, computed, h } from 'vue'
-import { List, Menu, Settings } from '@vicons/ionicons5'
+import { List, Menu, Settings, Analytics } from '@vicons/ionicons5'
 import { NIcon } from 'naive-ui'
 
 function renderIcon(icon: Component) {
@@ -21,6 +21,11 @@ const links = [
 		label: 'Categories',
 		key: '/categories',
 		icon: renderIcon(Settings),
+	},
+	{
+		label: 'Plans',
+		key: '/plans',
+		icon: renderIcon(Analytics),
 	},
 ]
 
