@@ -18,6 +18,9 @@ export const useAuthStore = defineStore({
 					return this.getUserProfile()
 				})
 				.then(user => {
+					if (this.routerNavigate == '/login') {
+						router.push('/')
+					}
 					router.push(this.routerNavigate || '/')
 					return user
 				})

@@ -60,6 +60,7 @@ export const useLogsStore = defineStore({
 				})
 		},
 		async initStore() {
+			this.logs = []
 			this.isLoading = true
 			await this.initCategories()
 			await this.loadLogsPagination()
