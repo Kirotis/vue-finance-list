@@ -21,12 +21,12 @@ const authStore = useAuthStore()
 				<span class="text-xl">
 					{{ authStore.user?.login }}
 				</span>
-				<NavigationDropDown />
 				<n-button @click="authStore.logout" secondary>
 					<template #icon>
 						<n-icon :component="LogOut" />
 					</template>
 				</n-button>
+				<NavigationDropDown />
 			</template>
 			<!-- <template v-else> </template> -->
 			<ThemeButton

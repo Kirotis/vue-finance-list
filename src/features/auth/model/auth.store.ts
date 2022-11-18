@@ -18,10 +18,7 @@ export const useAuthStore = defineStore({
 					return this.getUserProfile()
 				})
 				.then(user => {
-					if (this.routerNavigate == '/login') {
-						router.push('/')
-					}
-					router.push(this.routerNavigate || '/')
+					router.push('/')
 					return user
 				})
 		},
@@ -40,8 +37,8 @@ export const useAuthStore = defineStore({
 		},
 	},
 	getters: {
-		isAuthorized({ token }): boolean {
-			return !!(token && token.length > 0)
+		isAuthorized(state): boolean {
+			return !!(state.token && state.token.length > 0)
 		},
 	},
 })
