@@ -12,15 +12,17 @@ export const useAuthStore = defineStore({
 	}),
 	actions: {
 		login(username: string, password: string) {
-			return login(username, password)
-				.then(({ access_token }) => {
-					this.token = access_token
-					return this.getUserProfile()
-				})
-				.then(user => {
+			return login(username, password).then(({ access_token }) => {
+				this.token = access_token
+				if (this.routerNavigate == '/login') {
 					router.push('/')
-					return user
-				})
+				}
+				router.push(this.routerNavigate || '/')
+				// return this.getUserProfile()
+			})
+			// .then(user => {
+			// 	return user
+			// })
 		},
 
 		getUserProfile(): Promise<IUser> {
@@ -31,6 +33,7 @@ export const useAuthStore = defineStore({
 
 		logout() {
 			this.user = undefined
+			this.token = undefined
 			localStorage.removeItem('user')
 			// console.log('router :>> ', router)
 			router.push('/login')

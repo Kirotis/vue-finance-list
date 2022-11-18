@@ -22,8 +22,8 @@ watch(computedList, () => {
 
 <template>
 	<div class="h-full md:flex">
-		<n-spin size="large" v-if="store.isLoading" />
-		<div v-bind="containerProps" class="h-full w-full md:block" v-else>
+		<!-- <n-spin size="large" v-if="store.isLoading" /> -->
+		<div v-bind="containerProps" class="h-full w-full md:block">
 			<div class="plan-list" v-bind="wrapperProps">
 				<PlanCard
 					v-for="{ data } in list"
